@@ -110,7 +110,6 @@ var Diaspora = {
         // preview toggle
         $("#preview").one('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd', function() {
             var left = $('#preview').css('left');
-            alert(left);
             if (left == '0px') {
                 $('#container').hide();
             }else{
@@ -386,7 +385,7 @@ $(function() {
             // history state
             case (tag.indexOf('posttitle') != -1):
                 Diaspora.HS($(e.target), 'push')
-                return false;
+                // return false;
                 break;
             // prev, next post
             case (rel == 'prev' || rel == 'next'):
