@@ -110,6 +110,7 @@ var Diaspora = {
         // preview toggle
         $("#preview").one('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd', function() {
             var left = $('#preview').css('left');
+            alert(left);
             if (left == '0px') {
                 $('#container').hide();
             }else{
@@ -490,6 +491,5 @@ $(function() {
     if (comment.data('ae') == true){
         comment.click();
     }
-    console.log("%c Github %c","background:#24272A; color:#ffffff","","https://github.com/Fechin/hexo-theme-diaspora")
 })
 
