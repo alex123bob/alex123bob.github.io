@@ -34,7 +34,7 @@
     <div class="bar" style="width: 0;"></div>
     <a class="icon-home image-icon" href="javascript:;"></a>
     <div title="播放/暂停" class="icon-play"></div>
-    <h3 class="subtitle">HttpStatusCode</h3>
+    <h3 class="subtitle">Http Status Code 401/403</h3>
     <div class="social">
         <!--<div class="like-icon">-->
             <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
@@ -51,14 +51,40 @@
     <div class="section">
         <div class="article">
     <div class='main'>
-        <h1 class="title">HttpStatusCode</h1>
+        <h1 class="title">Http Status Code 401/403</h1>
         <div class="stuff">
             <span>八月 20, 2018</span>
             
 
         </div>
         <div class="content markdown">
-            <p>When we talk about http status code, most of the time we will be confused with the following two statuses.<br><a href="">401</a> and <a href="">403</a></p>
+            <p>I have been asked about the difference between two http status code: 401 and 403.<br>Off the top of my head, I will tell ppl 401 means unauthorized request while 403 represents server forbid client’s request.<br>But what the heck does that mean? I have yet thought thoroughly about it.</p>
+<p>After doing a few searches, I just put down some key points I learnt from others.</p>
+<h4 id="What-is-401"><a href="#What-is-401" class="headerlink" title="What is 401?"></a><strong>What is 401?</strong></h4><blockquote>
+<p>The <strong>401 Unauthorized Error</strong> is an HTTP response status code indicating that the request sent by the client could not be authenticated.</p>
+</blockquote>
+<p>I know the definition above is a <del>bullshit</del> coz it’s too abstract.<br>Receiving a 401 response is the server telling you, “you aren’t authenticated–either not authenticated at all or authenticated incorrectly–but please reauthenticate and try again.” And your server will help you out by providing a <font color="red"><strong>WWW-Authenticate header</strong></font> that describes how to authenticate.<br><strong>Attention:</strong> 401 is told by your server, not from your web application.</p>
+<h4 id="In-which-situation-will-401-pop-up"><a href="#In-which-situation-will-401-pop-up" class="headerlink" title="In which situation will 401 pop up?"></a><strong>In which situation will 401 pop up?</strong></h4><p>Most of the time, 401 error is related to client side.</p>
+<ul>
+<li>Client inputs an improper URL that server is not prepared to provide access to.</li>
+<li>Cookie cleaned</li>
+<li>Cache clean</li>
+<li>Log in/Log out</li>
+</ul>
+<p><strong>But</strong> we can’t rule server out of 401’s root cause.<br>As modern web servers provide one or more configuration files that allow you to reject requests to some specific directories or ban specific IP address, you will get <strong>401 Unauthorized Error</strong></p>
+<h4 id="What-exactly-is-403"><a href="#What-exactly-is-403" class="headerlink" title="What exactly is 403?"></a><strong>What exactly is 403?</strong></h4><blockquote>
+<p>Receiving a 403 response is the server telling you, “I’m sorry. I know who you are–I believe who you say you are–but you just don’t have permission to access this resource. Maybe if you ask the system administrator nicely, you’ll get permission. But please don’t bother me again until your predicament changes.”</p>
+</blockquote>
+<p>The explanation above is so much better than its original definition.(At least friendly to ppl like me ^_^)</p>
+<h4 id="To-Sum-up"><a href="#To-Sum-up" class="headerlink" title="To Sum up"></a><strong>To Sum up</strong></h4><p>403 is more concrete, your web application has got your message, and put its own logics in this process, and it’s permanent.<br>While 401 is coming from the server, not your web application. Most of the time, 401 means your request can still be sent to server and pass its authentication and get what you want in the final end as long as you change or put a new credential. </p>
+<p>I’d like to put <a href="http://www.danielirvine.com/" target="_blank" rel="noopener">Daniel Irvine</a>‘s quotes to end this post.</p>
+<blockquote>
+<p>In summary, a 401 Unauthorized response should be used for missing or bad authentication, and a 403 Forbidden response should be used afterwards, when the user is authenticated but isn’t authorized to perform the requested operation on the given resource.</p>
+</blockquote>
+<p>Reference docs for this post:</p>
+<ul>
+<li><a href="http://www.dirv.me/blog/2011/07/18/understanding-403-forbidden/index.html" target="_blank" rel="noopener">Understanding 403 Forbidden</a></li>
+</ul>
 
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
