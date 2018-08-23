@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+<html lang="" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CraveDonut</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Alexander Li,"> 
+    
+    <meta name="author" content="Alexander Li"> 
+    <link rel="alternative" href="atom.xml" title="CraveDonut" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-8691406134231910",
+        enable_page_level_ads: true
+      });
+    </script>
+
+</head>
+
+<body class="loading">
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">React Event System</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">React Event System</h1>
+        <div class="stuff">
+            <span>August 23, 2018</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <p>I just do a few anatomy of react source code on its event system, and this is not the latest source code coz Facebook has already updated React into a new one featured with Fiber which will optimize React’s reaction towards user’s input and output while React Component is under its own life cycle process.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">        &lt;div onClick=&#123;(<span class="function"><span class="params">evt</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="built_in">JSON</span>.stringify(evt))</span><br><span class="line">        &#125;)&#125;&gt;</span><br><span class="line">            All Starts With A Big Bang</span><br><span class="line">        &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>_UpdateDOMProperties</strong> [At the very first]</p>
+</blockquote>
+<p>In file <code>ReactDOMComponent.js</code>, <code>_UpdateDOMProperties</code> will be triggered when mountComponent and updateCompoennt. It’s just like appending properties or updating properties during its life cycle.<br>Let’s jump to the point, <code>enqueuePutListener</code>. This is responsible for registering event.</p>
+<blockquote>
+<p><strong>So go to definition of <code>enqueuePutListener</code></strong></p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">enqueuePutListener</span>(<span class="params">inst, registrationName, listener, transaction</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (transaction <span class="keyword">instanceof</span> ReactServerRenderingTransaction) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (__DEV__) &#123;</span><br><span class="line">    <span class="comment">// IE8 has no API for event capturing and the `onScroll` event doesn't</span></span><br><span class="line">    <span class="comment">// bubble.</span></span><br><span class="line">    warning(</span><br><span class="line">      registrationName !== <span class="string">'onScroll'</span> || isEventSupported(<span class="string">'scroll'</span>, <span class="literal">true</span>),</span><br><span class="line">      <span class="string">"This browser doesn't support the `onScroll` event"</span>,</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">var</span> containerInfo = inst._hostContainerInfo;</span><br><span class="line">  <span class="keyword">var</span> isDocumentFragment =</span><br><span class="line">    containerInfo._node &amp;&amp; containerInfo._node.nodeType === DOC_FRAGMENT_TYPE;</span><br><span class="line">  <span class="keyword">var</span> doc = isDocumentFragment</span><br><span class="line">    ? containerInfo._node</span><br><span class="line">    : containerInfo._ownerDocument;</span><br><span class="line">  listenTo(registrationName, doc);</span><br><span class="line">  transaction.getReactMountReady().enqueue(putListener, &#123;</span><br><span class="line">    inst: inst,</span><br><span class="line">    registrationName: registrationName,</span><br><span class="line">    listener: listener,</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Too much info, but what we need know is: </p>
+<ol>
+<li>This functionality traces back to instance’s ancestor until we find document. That’s why React Event is bound to document. </li>
+<li>Then invoking <code>listenTo</code> will register event to document. </li>
+<li>In the end, transaction will call <code>putListener</code> to store this event, when event is triggered, React will call this event’s callback func.</li>
+</ol>
+<blockquote>
+<p><strong>Let’s dive into <code>listenTo</code></strong></p>
+</blockquote>
+<p>It’s defiend in file <code>ReactBrowserEventEmitter.js</code>. Within <code>listenTo</code>, the core is <code>trapBubbledEvent</code> and <code>trapCapturedEvent</code>. Bubbled is for event at the phase of bubbling, captured is for capturing. Here we just take a look at <code>trackBubbledEvent</code>.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">trapBubbledEvent: <span class="function"><span class="keyword">function</span>(<span class="params">topLevelType, handlerBaseName, element</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!element) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> EventListener.listen(</span><br><span class="line">      element,</span><br><span class="line">      handlerBaseName,</span><br><span class="line">      ReactEventListener.dispatchEvent.bind(<span class="literal">null</span>, topLevelType),</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>As you can see in code snippet above, <code>EventListener</code> does only one thing, <code>listen</code>. And if you go deeper to see what exactly EventListener.listen does, you will finally see something you’re familiar with. (addEventListener/attachEvent)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">listen: <span class="function"><span class="keyword">function</span> <span class="title">listen</span>(<span class="params">target, eventType, callback</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (target.addEventListener) &#123;</span><br><span class="line">      target.addEventListener(eventType, callback, <span class="literal">false</span>);</span><br><span class="line">      <span class="keyword">return</span> &#123;</span><br><span class="line">        remove: <span class="function"><span class="keyword">function</span> <span class="title">remove</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">          target.removeEventListener(eventType, callback, <span class="literal">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (target.attachEvent) &#123;</span><br><span class="line">      target.attachEvent(<span class="string">'on'</span> + eventType, callback);</span><br><span class="line">      <span class="keyword">return</span> &#123;</span><br><span class="line">        remove: <span class="function"><span class="keyword">function</span> <span class="title">remove</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">          target.detachEvent(<span class="string">'on'</span> + eventType, callback);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>Time to store event</strong></p>
+</blockquote>
+<p>In aforementioned section, we have already <code>listened</code> event, but where and how do we process event’s listener(AKA event callback). Here is the answer. You can find <code>putListener</code> in functionality <code>enqueuePutListener</code>.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">putListener</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> listenerToPut = <span class="keyword">this</span>;</span><br><span class="line">  EventPluginHub.putListener(</span><br><span class="line">    listenerToPut.inst,</span><br><span class="line">    listenerToPut.registrationName,</span><br><span class="line">    listenerToPut.listener,</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>EventPluginHub</code> does do something hub will do.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// EventPluginHub</span></span><br><span class="line">putListener: <span class="function"><span class="keyword">function</span>(<span class="params">inst, registrationName, listener</span>) </span>&#123;</span><br><span class="line">    invariant(</span><br><span class="line">      <span class="keyword">typeof</span> listener === <span class="string">'function'</span>,</span><br><span class="line">      <span class="string">'Expected %s listener to be a function, instead got type %s'</span>,</span><br><span class="line">      registrationName,</span><br><span class="line">      <span class="keyword">typeof</span> listener,</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> key = getDictionaryKey(inst);</span><br><span class="line">    <span class="keyword">var</span> bankForRegistrationName =</span><br><span class="line">      listenerBank[registrationName] || (listenerBank[registrationName] = &#123;&#125;);</span><br><span class="line">    bankForRegistrationName[key] = listener;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> PluginModule =</span><br><span class="line">      EventPluginRegistry.registrationNameModules[registrationName];</span><br><span class="line">    <span class="keyword">if</span> (PluginModule &amp;&amp; PluginModule.didPutListener) &#123;</span><br><span class="line">      PluginModule.didPutListener(inst, registrationName, listener);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>See, EventPluginHub stores event listener in listenerBank.</p>
+<blockquote>
+<p><strong>How Is Event Dispatched</strong></p>
+</blockquote>
+<p>You have already seen that <code>ReactEventListener.dispatchEvent.bind(null, topLevelType)</code> is added as event callback when it’s in the phase of <code>trapBubbledEvent</code>. So in file <code>ReactEventListener</code>, <code>dispatchEvent</code> will be the entrance of event dispatch.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// In ReactEventListener.js</span></span><br><span class="line">dispatchEvent: <span class="function"><span class="keyword">function</span>(<span class="params">topLevelType, nativeEvent</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!ReactEventListener._enabled) &#123;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> bookKeeping = TopLevelCallbackBookKeeping.getPooled(</span><br><span class="line">      topLevelType,</span><br><span class="line">      nativeEvent,</span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="comment">// Event queue being processed in the same cycle allows</span></span><br><span class="line">      <span class="comment">// `preventDefault`.</span></span><br><span class="line">      ReactUpdates.batchedUpdates(handleTopLevelImpl, bookKeeping);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      TopLevelCallbackBookKeeping.release(bookKeeping);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>We still batch process event as you can see <code>ReactUpdates.batchedUpdates(handleTopLevelImpl, bookKeeping);</code> is defined within dispatchEvent.<br>Therefore, <code>handleTopLevelImpl</code>  is the core.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">handleTopLevelImpl</span>(<span class="params">bookKeeping</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> nativeEventTarget = getEventTarget(bookKeeping.nativeEvent);</span><br><span class="line">  <span class="keyword">var</span> targetInst = ReactDOMComponentTree.getClosestInstanceFromNode(</span><br><span class="line">    nativeEventTarget,</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Loop through the hierarchy, in case there's any nested components.</span></span><br><span class="line">  <span class="comment">// It's important that we build the array of ancestors before calling any</span></span><br><span class="line">  <span class="comment">// event handlers, because event handlers can modify the DOM, leading to</span></span><br><span class="line">  <span class="comment">// inconsistencies with ReactMount's node cache. See #1105.</span></span><br><span class="line">  <span class="keyword">var</span> ancestor = targetInst;</span><br><span class="line">  <span class="keyword">do</span> &#123;</span><br><span class="line">    bookKeeping.ancestors.push(ancestor);</span><br><span class="line">    ancestor = ancestor &amp;&amp; findParent(ancestor);</span><br><span class="line">  &#125; <span class="keyword">while</span> (ancestor);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; bookKeeping.ancestors.length; i++) &#123;</span><br><span class="line">    targetInst = bookKeeping.ancestors[i];</span><br><span class="line">    ReactEventListener._handleTopLevel(</span><br><span class="line">      bookKeeping.topLevelType,</span><br><span class="line">      targetInst,</span><br><span class="line">      bookKeeping.nativeEvent,</span><br><span class="line">      getEventTarget(bookKeeping.nativeEvent),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The important thing in <code>handleTopLevelImpl</code> is collecting event target’s ancestors and saving them locally. That’s why React Synthetic Event has its own bubbling system.</p>
+<h4 id="CONTINUE"><a href="#CONTINUE" class="headerlink" title="CONTINUE"></a><strong>CONTINUE</strong></h4><p><code>ReactEventListener._handleTopLevel</code> actually is using <code>ReactBrowserEventEmitter</code>‘s handleTopLevel, let check that out:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">handleTopLevel: <span class="function"><span class="keyword">function</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">    topLevelType,</span></span></span><br><span class="line"><span class="function"><span class="params">    targetInst,</span></span></span><br><span class="line"><span class="function"><span class="params">    nativeEvent,</span></span></span><br><span class="line"><span class="function"><span class="params">    nativeEventTarget,</span></span></span><br><span class="line"><span class="function"><span class="params">  </span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> events = EventPluginHub.extractEvents(</span><br><span class="line">      topLevelType,</span><br><span class="line">      targetInst,</span><br><span class="line">      nativeEvent,</span><br><span class="line">      nativeEventTarget,</span><br><span class="line">    );</span><br><span class="line">    runEventQueueInBatch(events);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>It’s <code>crystal</code> clear that handleTopLevel does two things:</p>
+<ol>
+<li>Construct React Synthetic Event.</li>
+<li>Batch run events.</li>
+</ol>
+<blockquote>
+<p><strong>How Synthetic Event Is Constructed?</strong></p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">extractEvents: <span class="function"><span class="keyword">function</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">    topLevelType,</span></span></span><br><span class="line"><span class="function"><span class="params">    targetInst,</span></span></span><br><span class="line"><span class="function"><span class="params">    nativeEvent,</span></span></span><br><span class="line"><span class="function"><span class="params">    nativeEventTarget,</span></span></span><br><span class="line"><span class="function"><span class="params">  </span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> events;</span><br><span class="line">    <span class="keyword">var</span> plugins = EventPluginRegistry.plugins;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; plugins.length; i++) &#123;</span><br><span class="line">      <span class="comment">// Not every plugin in the ordering may be loaded at runtime.</span></span><br><span class="line">      <span class="keyword">var</span> possiblePlugin = plugins[i];</span><br><span class="line">      <span class="keyword">if</span> (possiblePlugin) &#123;</span><br><span class="line">        <span class="keyword">var</span> extractedEvents = possiblePlugin.extractEvents(</span><br><span class="line">          topLevelType,</span><br><span class="line">          targetInst,</span><br><span class="line">          nativeEvent,</span><br><span class="line">          nativeEventTarget,</span><br><span class="line">        );</span><br><span class="line">        <span class="keyword">if</span> (extractedEvents) &#123;</span><br><span class="line">          events = accumulateInto(events, extractedEvents);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> events;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Due to limited time, I will write a new post to talk detailed process while constructing react synthetic events. But here we need to be clear about some points:</p>
+<ol>
+<li>When constructing its Synthetic Event, React use a Object pool mechanism which will dramatically reduce the time spent of object creation and destroy, so as to largely improve its performance.</li>
+<li>Event is based on templates. Here, <code>EventPluginRegistry</code> contains five plugins: SimpleEventPlugin, EnterLeaveEventPlugin, ChangeEventPlugin, SelectEventPlugin, BeforeInputEventPlugin. They have their own processing respectively.</li>
+</ol>
+<blockquote>
+<p><strong>After Synthetic Event Is Constructed</strong></p>
+</blockquote>
+<p>Then we <code>runEventQueueInBatch(events);</code>. Again, I will upload a new post to elaborate on this topic.</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        <li title='0' data-url='http://link.hhtjim.com/163/5146554.mp3'></li>
+                    
+                        <li title='1' data-url='http://link.hhtjim.com/qq/001faIUs4M2zna.mp3'></li>
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+</html>
