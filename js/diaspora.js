@@ -467,8 +467,8 @@ $(function() {
                 Diaspora.loading(),
                 comment = $('#gitalk-container');
                 gitalk = new Gitalk({
-                  clientID: comment.data('ci'),
-                  clientSecret: comment.data('cs'),
+                  clientID: comment.data('ci') || 'a9acae2fbd0522db8c41',
+                  clientSecret: comment.data('cs') || '8abe1956860f894074f6223626cd570aa273d04a',
                   repo: comment.data('r'),
                   owner: comment.data('o'),
                   admin: comment.data('a'),
