@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CraveDonut</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Alexander Li,"> 
+    
+    <meta name="author" content="Alexander Li"> 
+    <link rel="alternative" href="atom.xml" title="CraveDonut" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-8691406134231910",
+        enable_page_level_ads: true
+      });
+    </script>
+
+</head>
+
+<body class="loading">
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">Function as Child Components</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Function as Child Components</h1>
+        <div class="stuff">
+            <span>December 29, 2018</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h4 id="WHAT-is-FaCC"><a href="#WHAT-is-FaCC" class="headerlink" title="WHAT is FaCC?"></a><strong><font color="brown">WHAT</font> is FaCC?</strong></h4><p>A Function as Child Component (or FaCC) is a pattern that lets you pass a render function to a component as the <code>chidren</code> prop.<br>It exploits the fact that you can change what you can pass as <code>children</code> to a component.<br>By default, <code>children</code> is of type <code>ReactNodeList</code> (think of this as an array of JSX elements).<br>It’s what we’re used to when placing JSX within other tags.</p>
+<p>When you use a FaCC, instead of passing JSX markup, you can assign <code>children</code> as a function.</p>
+<p>Let’s check it out:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;Foo&gt;</span><br><span class="line">  &#123;(name) =&gt; &lt;div&gt;`hello from $&#123;name&#125;`&lt;/div&gt;&#125;</span><br><span class="line">&lt;<span class="regexp">/Foo&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Foo = <span class="function">(<span class="params">&#123; children &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> children(<span class="string">'foo'</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><strong>Check out a FaCC example with <font color="red">flesh</font> and <font color="brown">blood</font></strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WindowWidth</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="keyword">super</span>(props);</span><br><span class="line">    <span class="keyword">this</span>.state = &#123; <span class="attr">width</span>: <span class="built_in">window</span>.innerWidth &#125;;</span><br><span class="line">    <span class="keyword">this</span>.onResize = <span class="keyword">this</span>.onResize.bind(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  componentDidMount() &#123;</span><br><span class="line">    <span class="built_in">window</span>.addEventListener(<span class="string">'resize'</span>, <span class="keyword">this</span>.onResize);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  componentWillUnmount() &#123;</span><br><span class="line">    <span class="built_in">window</span>.removeEventListener(<span class="string">'resize'</span>, <span class="keyword">this</span>.onResize);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  onResize(&#123; target &#125;) &#123;</span><br><span class="line">    <span class="keyword">this</span>.setState(&#123; <span class="attr">width</span>: target.innerWidth &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; width &#125; = <span class="keyword">this</span>.state;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.props.children(width);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;WindowWidth&gt;</span><br><span class="line">  &#123;width =&gt; &lt;div&gt;window is &#123;width&#125;&lt;/div&gt;&#125;</span><br><span class="line">&lt;<span class="regexp">/WindowWidth&gt;</span></span><br></pre></td></tr></table></figure>
+<font color="#663300" style="text-decoration: underline;"><strong>The real power of render callbacks can be seen in this example. <code>WindowWidth</code> will do all of the heavy lifting, while exactly what is rendered can change, depending on the render function that is passed.</strong></font>
+
+
+<h4 id="WHY-do-we-use-FaCC-AKA-pros"><a href="#WHY-do-we-use-FaCC-AKA-pros" class="headerlink" title="WHY do we use FaCC? (AKA pros)"></a><strong><font color="brown">WHY</font> do we use FaCC? (AKA pros)</strong></h4><ol>
+<li>The developer composing the components owns how these properties are passed around and used.</li>
+<li>The author of the Function as Child Component doesn’t enforce how its values are leveraged allowing for very flexible use.</li>
+<li>Consumers don’t need to create another component to decide how to apply properties passed in from a “Higher Order Component”. Higher Order Components typically enforce property names on the components they are composed with. To work around this many providers of “Higher Order Components” provide a selector function which allows consumers to choose your property names (think react-redux select function). This isn’t a problem with Function as Child Components.</li>
+<li>Higher Order Components create a layer of indirection in your development tools and components themselves, for example setting constants on a Higher Order Component will be unaccessible once wrapped in a Higher Order Component. For example:</li>
+</ol>
+<blockquote>
+<p>MyComponent.SomeContant = ‘SCUBA’;</p>
+</blockquote>
+<p>Then wrapped by a Higher Order Component,</p>
+<blockquote>
+<p>export default connect(…., MyComponent);</p>
+</blockquote>
+<p>RIP your constant. It is no longer accessible without the Higher Order Component providing a function to access the underlying component class. <strong>Sad :(</strong>.</p>
+<h4 id="I-have-mentioned-Render-Callback-right"><a href="#I-have-mentioned-Render-Callback-right" class="headerlink" title="I have mentioned Render Callback, right?"></a><strong>I have mentioned <font color="brown">Render Callback</font>, right?</strong></h4><p style="text-decoration: underline;">Long Story short: <strong>Not all rectangles are squares</strong></p>
+
+<p>It’s important not confuse Function as Child Components with render callbacks. A FaCC is simply one implementation of a render callback. There are other ways to implement render callbacks. In other words, a FaCC is a type of render callback, but not all render callbacks are FaCCs.</p>
+<h4 id="FaCCs-are-an-anti-pattern-Someone-said-that"><a href="#FaCCs-are-an-anti-pattern-Someone-said-that" class="headerlink" title="FaCCs are an anti-pattern. Someone said that."></a><strong>FaCCs are an <font color="brown">anti-pattern</font>. Someone said that.</strong></h4><p>What?! How can that be? FaCCs are loved and embraced by many in the React community. How can it be an anti-pattern?</p>
+<blockquote>
+<p>“There are only two hard things in Computer Science: cache invalidation and naming things.”<br>– Popularly attributed to Phil Karlton</p>
+</blockquote>
+<p>Let’s say that you had a function that took two numbers, added them together and returned the result. What would you call that function? You might call it add, or maybe sum.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> add = <span class="function">(<span class="params">a, b</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">add(<span class="number">2</span>, <span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+<p>Clean coding practices state that you use descriptive names for properties, variables, functions, etc. I hope that we can all agree with this concept. You would never name your add function above badger (although that would be cool) or tapioca or even children, would you?</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> children = <span class="function">(<span class="params">a, b</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">children(<span class="number">2</span>, <span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+<p>Of course you wouldn’t. That would be silly, confusing, and not very self-documenting. Then why in the world would you ever use a prop named children to pass a render callback function? I can only imagine seeing this used for the first time in a pull request. Not in my organization, fella. Rejected!</p>
+<p>Using a pattern that goes against what we all consider to be a best practice is called an anti-pattern. </p>
+<blockquote>
+<p>By definition, then, FaCCs are an <font color="red"><strong>anti-pattern</strong></font>.</p>
+</blockquote>
+<h4 id="Since-Anti-Pattern-any-alternative-to-improve-it"><a href="#Since-Anti-Pattern-any-alternative-to-improve-it" class="headerlink" title="Since Anti-Pattern, any alternative to improve it?"></a><strong>Since Anti-Pattern, any alternative to improve it?</strong></h4><blockquote>
+<p>Render Props</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Foo = <span class="function">(<span class="params">&#123; render &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> render(<span class="string">'foo'</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><strong>Example 1</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Foo render=&#123;(name) =&gt; &lt;div&gt;`hello from $&#123;name&#125;`&lt;/div&gt;&#125; /&gt;</span><br></pre></td></tr></table></figure></p>
+<p><strong>Example 2</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> hello = <span class="function">(<span class="params">name</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> &lt;div&gt;`hello from $&#123;name&#125;`&lt;/div&gt;;</span><br><span class="line">&#125;;</span><br><span class="line">&lt;Foo render=&#123;hello&#125; /&gt;</span><br></pre></td></tr></table></figure></p>
+<p>Notice how this is much more descriptive? The code is self-documenting. You can say to yourself, “Foo calls a function to do the rendering,” instead of “Foo calls something; I don’t remember why.”</p>
+<blockquote>
+<p>Component Injection - A better solution</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Hello = <span class="function">(<span class="params">&#123; name &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> &lt;div&gt;`hello from $&#123;name&#125;`&lt;/div&gt;;</span><br><span class="line">&#125;;</span><br><span class="line">&lt;Foo render=&#123;Hello&#125; /&gt;</span><br></pre></td></tr></table></figure>
+<p>Things look pretty much the same as in the Render Props example above, except the prop we pass is capitalized because components must be capitalized in React. We also pass in props, an object, instead of a single string parameter, but those are the only differences. This should all look very familiar to you.</p>
+<p>And our <code>Foo</code> component looks a lot more like a traditional React component.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Foo = <span class="function">(<span class="params">&#123; render: View &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> &lt;View name="foo" /&gt;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>One thing to notice is that we rename <code>render</code> to <code>View</code> using ES6 destructuring assignment syntax (i.e., the <code>render: View</code> part), again because components must be capitalized in React.</p>
+<p>But the cool part is that instead of calling a function to render, it uses standard JSX composition. Refreshing, huh?</p>
+<p>The only thing that might be different from what you might be used to is that instead of <code>import</code>ing <code>Hello</code>, we inject it (i.e., pass it as a prop).</p>
+<p>Injecting your dependencies is a powerful side effect of this technique that allows for easier run-time altering of components and increased ease of mocking tests.</p>
+<p>Need more examples? Here’s the more advanced solution shown above, altered for Component Injection. Everything with <code>WindowWidth</code> remains the same except for the <code>render</code> method:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">render() &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; width &#125; = <span class="keyword">this</span>.state;</span><br><span class="line">  <span class="keyword">const</span> &#123; <span class="attr">render</span>: View &#125; = <span class="keyword">this</span>.props;</span><br><span class="line">  <span class="keyword">return</span> &lt;View width=&#123;width&#125; /&gt;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>…as well as how you use it.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;WindowWidth render=&#123;DisplayWindowWidthText&#125; /&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> DisplayWindowWidthText = <span class="function">(<span class="params">&#123; width &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> &lt;div&gt;window is &#123;width&#125;&lt;/div&gt;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>As you can see, the DisplayWindowWidthText component is “injected” into WindowWidth as a prop named render.</p>
+<p>We could even pass a different component and get a completely different rendered output – again, thanks to the power of render callback.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;WindowWidth render=&#123;DisplayDevice&#125; /&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> DisplayDevice = <span class="function">(<span class="params">&#123; width &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> device = <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">if</span> (width &lt;= <span class="number">480</span>) &#123;</span><br><span class="line">    device = <span class="string">'mobile'</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (width &lt;= <span class="number">768</span>) &#123;</span><br><span class="line">    device = <span class="string">'tablet'</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    device = <span class="string">'desktop'</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> &lt;div&gt;you are using a &#123;device&#125;&lt;/div&gt;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="The-Ugly-of-FaCC-AKA-Cons"><a href="#The-Ugly-of-FaCC-AKA-Cons" class="headerlink" title="The Ugly of FaCC (AKA Cons)"></a><strong>The Ugly of FaCC (AKA Cons)</strong></h4><p>When you want it to work fast, FaCC might not be performance friendly, coz changes on render.<br>In many cases it doesn’t matter though. react-motion uses this pattern and works fine.</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        <li title='0' data-url='http://link.hhtjim.com/163/5146554.mp3'></li>
+                    
+                        <li title='1' data-url='http://link.hhtjim.com/qq/001faIUs4M2zna.mp3'></li>
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+</html>
